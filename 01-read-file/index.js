@@ -13,5 +13,5 @@ stream.on('error', (err) => {
 });
 
 stream.on('data', (chunk) => {
-    console.log(chunk)
-})
+  console.log(chunk);
+});
