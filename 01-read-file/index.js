@@ -8,7 +8,7 @@ stream.on('error', (err) => {
   if (err.code === 'ENOENT') {
     console.error('no such file in directory');
   } else {
-    throw err;
+    console.error(err);
   }
 });
 
