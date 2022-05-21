@@ -14,7 +14,7 @@ fs.readdir(pathToCopyDir, (err, files) => {
         if (err) {
           console.log(err);
         }
-      })
+      });
     });
   }  
 });
@@ -25,7 +25,7 @@ async function copyDir (dir, copyDir) {
     const files = await fsPromises.readdir(dir);
     files.forEach(file => {
       fsPromises.copyFile(path.join(dir, file), path.join(copyDir, file));
-    })
+    });
   } catch (err) {
     console.error(err);
   }

@@ -8,11 +8,11 @@ stdout.write('Hello, write your data or "exit" for cancel\n');
 process.on('SIGINT', () => process.exit());
 
 stdin.on('data', data => {
- if (data.toString().trim() === 'exit' || data.toString().trim() === 'Exit' ) {
-   process.exit();
- } else {
-  writeableStream.write(`${data.toString().trim()}\n`);
- }
+  if (data.toString().trim() === 'exit' || data.toString().trim() === 'Exit' ) {
+    process.exit();
+  } else {
+    writeableStream.write(`${data.toString().trim()}\n`);
+  }
 });
 
 process.on('exit', () => {
