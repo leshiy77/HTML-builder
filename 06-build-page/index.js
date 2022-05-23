@@ -13,60 +13,38 @@ fs.mkdir(path.join(projectPath), { recursive: true }, (err) => {
   }
 });
 
-
-
-const writeableStreamHTML = fs.createWriteStream(path.join(projectPath, 'index.html'));
-const writeableStreamCSS = fs.createWriteStream(path.join(projectPath, 'style.css'));
-const readableStreamHTML = fs.createReadStream(path.join(__dirname, 'template.html'));
-
-
-
-async function mergeStyle (dir) {
-  try {
-    const files = await fsPromises.readdir(dir, {withFileTypes: true});
-    const trueFiles = files.filter(elem => elem.isFile());
-    trueFiles.forEach (file => {
-      let fileObj = path.parse(path.join(dir, file.name));
-      if (fileObj.ext === '.css') {
-        fs.readFile(path.join(stylePath, fileObj.base), 'utf-8', (err, data) => {
-          if (err) {
-            console.log(err);
-          }
-          writeableStreamCSS.write(`${data}\n`);
-        })
+const copyDir = (dir, newDir) => {
+  fs.rm(newDir, { recursive: true, force: true }, (err) => {
+    if (err) {
+      console.log(err);
+    }
+    fs.mkdir(newDir, { recursive:true }, (err) => {
+      if (err) {
+        console.log(err);
       }
     });
-  } catch(err) {
-    console.error(err);
-  }
-}
-
-mergeStyle(stylePath);
-
-fs.readdir(projectAssetsPath, (err, files) => {
-  if (err) {
-    return;
-  } else {
-    files.forEach(file => {
-      fs.unlink(path.join(projectAssetsPath, file), (err) => {
-        if (err) {
-          console.log(err);
+    fs.readdir(dir, { withFileTypes: true }, (err, files) => {
+      if (err) {
+        console.log(err);
+      }
+      files.forEach(file => {
+        let filePath = path.join(dir, file.name);
+        let fileNewPath = path.join(newDir, file.name);
+        if (file.isFile()) {
+          fs.copyFile(filePath, fileNewPath, (err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+        if (file.isDirectory()) {
+          copyDir(filePath, fileNewPath);
         }
       });
     });
-  }  
-});
+  });
+};
 
-async function copyDir (dir, copyDir) {
-  fsPromises.mkdir(copyDir, { recursive: true });
-  try {
-    const files = await fsPromises.readdir(dir);
-    files.forEach(file => {
-      fsPromises.copyFile(path.join(dir, file), path.join(copyDir, file));
-    });
-  } catch (err) {
-    console.error(err);
-  }
-}
 
 copyDir(assetsPath, projectAssetsPath);
+

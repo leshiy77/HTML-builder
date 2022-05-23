@@ -1,33 +1,36 @@
 const path = require('path');
 const fs = require('fs');
-const fsPromises = require('fs/promises');
 
 const stylePath = path.join(__dirname, 'styles');
 const projectPath = path.join(__dirname, 'project-dist');
 
 const writeableStream = fs.createWriteStream(path.join(projectPath, 'bundle.css'));
 
-async function mergeStyle (dir) {
-  try {
-    const files = await fsPromises.readdir(dir, {withFileTypes: true});
-    const trueFiles = files.filter(elem => elem.isFile());
-    trueFiles.forEach (file => {
-      let fileObj = path.parse(path.join(dir, file.name));
+fs.readdir(stylePath, { withFileTypes: true }, (err, files) => {
+  if (err) {
+    console.log(err);
+  }
+  files.forEach( file => {
+    if (file.isFile()) {
+      let filePath = path.join(stylePath, file.name);
+      let fileObj = path.parse(filePath);
       if (fileObj.ext === '.css') {
-        fs.readFile(path.join(stylePath, fileObj.base), 'utf-8', (err, data) => {
+        let readStream = fs.createReadStream(filePath, 'utf-8');
+        let style = ' ';
+        readStream.on('data', (chunk) => {
+          style += chunk;
+        });
+        readStream.on('end', () => {
+          writeableStream.write(style.trim());
+          writeableStream.write('\n');
+        });
+        readStream.on('error', (err) => {
           if (err) {
             console.log(err);
           }
-          writeableStream.write(`${data}\n`);
-        })
+        });
       }
-    });
-  } catch(err) {
-    console.error(err);
-  }
-}
-
-mergeStyle(stylePath);
-
-
+    }
+  });
+});
 
