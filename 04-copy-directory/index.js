@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const { fail } = require('assert');
 
 const pathToDir = path.join(__dirname, 'files');
 const pathToCopyDir = path.join(__dirname, 'files-copy');
