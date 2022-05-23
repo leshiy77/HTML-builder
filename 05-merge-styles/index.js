@@ -7,7 +7,7 @@ const projectPath = path.join(__dirname, 'project-dist');
 
 const writeableStream = fs.createWriteStream(path.join(projectPath, 'bundle.css'));
 
-async function readDir (dir) {
+async function mergeStyle (dir) {
   try {
     const files = await fsPromises.readdir(dir, {withFileTypes: true});
     const trueFiles = files.filter(elem => elem.isFile());
@@ -27,7 +27,7 @@ async function readDir (dir) {
   }
 }
 
-readDir(stylePath);
+mergeStyle(stylePath);
 
 
 
