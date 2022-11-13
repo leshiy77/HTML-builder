@@ -5,7 +5,7 @@ const path = require('path');
 async function readDir (pathForDir) {
   try {
     const files = await fsPromises.readdir(pathForDir, {withFileTypes: true});
-    const trueFiles = files.filter(elem => elem.isFile());
+    const trueFiles = files.filter(file => file.isFile());
     trueFiles.forEach (file => {
       let fileObj = path.parse(path.join(pathForDir, file.name));
       fs.stat(path.join(pathForDir, file.name), (err, stats) => {
