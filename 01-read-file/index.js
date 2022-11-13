@@ -3,6 +3,7 @@ const path = require('path');
 
 const pathToFile = path.join(__dirname, 'text.txt');
 const stream = fs.createReadStream(pathToFile, 'utf-8');
+const data = [];
 
 stream.on('error', (err) => {
   if (err.code === 'ENOENT') {
@@ -13,5 +14,9 @@ stream.on('error', (err) => {
 });
 
 stream.on('data', (chunk) => {
-  console.log(chunk);
+  data.push(chunk);
+});
+
+stream.on('end', () => {
+  console.log(data.join(''));
 });

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { stdin, stdout } = process;
 
-const writeableStream = fs.createWriteStream(path.join(__dirname, 'text.txt'));
+const writeableStream = fs.createWriteStream(path.join(__dirname, 'output.txt'), {flags: 'a'});
 
 stdout.write('Hello, write your data or "exit" for cancel\n');
 process.on('SIGINT', () => process.exit());
